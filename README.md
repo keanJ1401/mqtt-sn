@@ -13,3 +13,11 @@ cd contiki/example
 git clone https://github.com/keanJ1401/mqtt-sn.git
 make TARGET = cc2538dk
 ```
+
+
+MQTT-SN Gateway
+```
+cd tools/mosquitto.rsmb/rsmb/src
+make clean && make
+./broker_mqtts config.mqtt
+```
