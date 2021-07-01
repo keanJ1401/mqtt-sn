@@ -1,14 +1,14 @@
 # WSN (6LoWPAN) using MQTT-SN
 
 
-Topology
+### Topology
 ```
 |-----------|                 |----------------|            |-----------------------|               |-------------|
 |  6LOWPAN  | ----PUBLISH---- | MOSQUITTO-RSMB | ++BRIDGE++ | BROKER (EMQ X BROKER) |---SUBSCRIBE---|  END-USERS  |
 |-----------|                 |----------------|            |-----------------------|               |-------------|
 ```
 
-CC2538DK hardware (can resetup port on contiki/platform/cc2538dk/dev/board.h)
+### CC2538DK hardware (can resetup port on contiki/platform/cc2538dk/dev/board.h)
 ```
 # SDA ---- PA6 |   BMP180 > | I2C communication
 # SCL ---- PA5 |   SI7021 > | I2C communication
@@ -23,7 +23,8 @@ cd contiki/example
 git clone https://github.com/keanJ1401/mqtt-sn.git
 make TARGET = cc2538dk
 ```
-mqtt-sn-tool
+
+### mqtt-sn-tool
 ```
 cd mqtt-sn/tools/mqtt-sn-tools
 make clean && make
@@ -31,14 +32,14 @@ sudo make install
 mqtt-sn-sub -p 1884 -h fd00::1 -t "#" -v
 ```
 
-MQTT-SN Gateway
+### MQTT-SN Gateway
 ```
 cd mqtt-sn/tools/mosquitto.rsmb/rsmb/src
 make clean && make
 ./broker_mqtts config.mqtt
 ```
 
-Border Router
+### Border Router
 ```
 # CC2538 label port: /dev/ttyUSB*
 # CC2650 label port: /dev/ttyACM* 
