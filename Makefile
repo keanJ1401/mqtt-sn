@@ -1,4 +1,4 @@
-all: main_core mqtt-sn-sensor bmp_mq2 cc2538-sensor
+all: sensor-1
 PROJECT_SOURCEFILES += mqtt_sn.c
 APPS+=powertrace
 WITH_UIP6=1
