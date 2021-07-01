@@ -16,7 +16,7 @@ CC2538DK hardware (can resetup port on contiki/platform/cc2538dk/dev/board.h)
 # ADC ---- PA2 |   MQ2    > | ADC communication
 ```
 ```
-# This is my contiki (I change something on it), put this respo on example folder of contiki,
+# This is my contiki (I had changed libaries on it), put this repo on example folder of contiki,
 # or you can change the contiki path on Makefile
 git clone https://github.com/keanJ1401/contiki.git
 cd contiki/example
