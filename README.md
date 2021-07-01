@@ -1,10 +1,10 @@
 # mqtt-sn on WSN (6LoWPAN)
 
 
-
-SDA ---- PA6 |   BMP180 > | I2C <br>
-SCL ---- PA5 |   SI7021 > | I2C <br>
-ADC ---- PA2 |   MQ2    > | ADC <br>
+CC2538DK hardware
+- SDA ---- PA6 |   BMP180 > | I2C <br>
+- SCL ---- PA5 |   SI7021 > | I2C <br>
+- ADC ---- PA2 |   MQ2    > | ADC <br>
 ```
 # This is my contiki (I change something on it), put this respo on example folder of contiki,
 # or you can change the contiki path on Makefile
