@@ -3,9 +3,13 @@
 
 ### Topology
 ```
-|-----------|                 |----------------|            |-----------------------|               |-------------|
-|  6LOWPAN  | ----PUBLISH---- | MOSQUITTO-RSMB | ++BRIDGE++ | BROKER (EMQ X BROKER) |---SUBSCRIBE---|  END-USERS  |
-|-----------|                 |----------------|            |-----------------------|               |-------------|
+                                              |-----------------------|
+                                              |   MOSQUITTO-RSMB      |
+                |-----------|                 |                       |                |-------------|
+                |  6LOWPAN  | ----PUBLISH---- |+++++++ BRIDGE ++++++++| ---SUBSCRIBE---|  END-USERS  |
+                |-----------|    *MQTT-SN*    |                       |      *MQTT*    |-------------|
+                                              | BROKER (EMQ X BROKER) |
+                                              |-----------------------|
 ```
 
 ### CC2538DK hardware (can resetup port on contiki/platform/cc2538dk/dev/board.h)
