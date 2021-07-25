@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "lpm.h"
 
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
@@ -107,10 +108,11 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Initializing the MQTT_SN_DEMO");
 
   init_broker();
-
+  lpm_set_max_pm(1);
   etimer_set(&time_poll, CLOCK_SECOND);
 
   while(1) {
+	lpm_exit();
       PROCESS_WAIT_EVENT();
       sprintf(pub_test,"%s",topic_hw);
       mqtt_sn_pub("sensor/test",pub_test,true,0);

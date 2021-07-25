@@ -777,6 +777,7 @@ resp_con_t verf_hist_sub(char *topic);
  *  @retval SUCCESS_CON   Sucesso ao enviar a desconexão
  *
  **/
+resp_con_t mqtt_sn_disconnect(uint16_t duration);
 resp_con_t mqtt_sn_disconnect_send(uint16_t duration);
 
 /** @brief Inicializa os vetores MQTT-SN

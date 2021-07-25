@@ -50,9 +50,8 @@
 #define NETSTACK_CONF_MAC csma_driver
 #define NETSTACK_CONF_RDC contikimac_driver
 
-#define MOTION_SENSOR_PORT       GPIO_A_NUM
-#define MOTION_SENSOR_PIN        6
-#define MOTION_SENSOR_VECTOR     GPIO_A_IRQn
+// No need for UART
+#define CC2538_CONF_QUIET 1
 
 //#define NODE_TYPE_COLLECTOR 1
 

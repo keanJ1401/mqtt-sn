@@ -42,9 +42,9 @@ unsigned char MQcalib = 0, CalibFlag=0;
 float MQvalCalib=0;
 float RL_VALUE=5.0;                                     //define the load resistance on the board, in kilo ohms
 float RO_CLEAN_AIR_FACTOR=9.83;                     //RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO,
-int CALIBARAION_SAMPLE_TIMES=50;                    //define how many samples you are going to take in the calibration phase
+int CALIBARAION_SAMPLE_TIMES=25;                    //define how many samples you are going to take in the calibration phase
 int CALIBRATION_SAMPLE_INTERVAL=500;                //define the time interal(in milisecond) between each samples in the
-int READ_SAMPLE_TIMES=50;                            //define how many samples you are going to take in normal operation
+int READ_SAMPLE_TIMES=25;                            //define how many samples you are going to take in normal operation
 int READ_SAMPLE_INTERVAL= (5) ;              //define the time interal(in 5 milisecond) between each samples in 
                                                     //normal operation
 /**********************Application Related Macros**********************************/
@@ -206,20 +206,15 @@ PROCESS_THREAD(MQtest, ev, data)
     // Pubblish MQ2
     if(CalibFlag == 1){
       Ro = MQvalCalib;  
-      leds_off(LEDS_RED);
-      leds_on(LEDS_BLUE);
-
        float iPPM_LPG = 0;
        float iPPM_CO = 0;
        float iPPM_Smoke = 0;
-      printf("Ro= %d kohm\n",(int)Ro);
       iPPM_LPG = MQGetGasPercentage((float)(MQRead()/Ro),GAS_LPG);
       iPPM_CO = MQGetGasPercentage((float)(MQRead()/Ro),GAS_CO);
       iPPM_Smoke = MQGetGasPercentage((float)(MQRead()/Ro),GAS_SMOKE);
-      printf("ADC: %d", adc_raw_value());
       memset(data_pub,0,sizeof(data_pub)); // clear string
       sprintf(data_pub,"{\"LPG\":\"%d\", \"CO\":\"%d\", \"Smoke\":\"%d\"}",(int)(iPPM_LPG),(int)(iPPM_CO),(int)(iPPM_Smoke) );
-      printf("%s",data_pub);
+      printf("%s\t",data_pub);
       mqtt_sn_pub("sensor/mq2", data_pub, false, 0);
     }
 
@@ -228,7 +223,7 @@ PROCESS_THREAD(MQtest, ev, data)
     temperature1 = bmpx8x.value(BMPx8x_READ_TEMP);
     memset(data_pub, 0, sizeof(data_pub));
     sprintf(data_pub, "{\"Press\": \"%u.%u\", \"Temp\": \"%d.%u\"}", pressure / 10, pressure % 10, temperature1 / 10, temperature1 % 10);
-    printf("%s", data_pub);
+    printf("%s\t", data_pub);
     mqtt_sn_pub("sensor/bmp180" , data_pub, false, 0);
 
     // Publish SI7021
@@ -242,7 +237,7 @@ PROCESS_THREAD(MQtest, ev, data)
     float h = (float) (hf * 125) / 65536.0 - 6.0;
     sprintf(data_pub, "{\"Temp\": \"%ld.%2u\", \"Hum\": \"%ld.%2u\"}", (long)t, (unsigned)((t-floor(t))*100), (long)h, (unsigned)((h-floor(h))*100));
     mqtt_sn_pub("sensor/si7021" , data_pub, false, 0);
-    printf("%s", data_pub);
+    printf("%s\t\n", data_pub);
 
     // Reset Timer
     etimer_reset(&timer_adc);
