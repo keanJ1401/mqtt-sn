@@ -44,7 +44,7 @@
 #include "dev/motion-sensor.h"
 #define LEDS_OFF_HYSTERISIS      RTIMER_SECOND
 #define DOOR_TIMEOUT             (10 * CLOCK_SECOND)
-#define RSSI_INTERVAL            (15 * CLOCK_SECOND)
+#define RSSI_INTERVAL            (60 * CLOCK_SECOND)
 #define SENSOR_READ_INTERVAL     (10 * CLOCK_SECOND)
 #include "sys/rtimer.h"
 #include "sys/ctimer.h"
@@ -61,13 +61,11 @@ static uint16_t broker_address[] = {0xfd00, 0, 0, 0, 0, 0, 0, 0x1};
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {
-                                  "home/door/control",
-                                  "home/door/mode",
-                                  "home/rssi",
+                                  "actuator/door/control",
+                                  "actuator/door/mode",
+                                  "sensor/node2/rssi",
                                   };
-// static char     *will_topic = "/6lowpan_node/offline";
-// static char     *will_message = "O dispositivo esta offline";
-// This topics will run so much faster than others
+
 mqtt_sn_con_t mqtt_sn_connection;
 /*---------------------------------------------------------------------------*/
 
@@ -155,18 +153,14 @@ void init_broker(void){
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X", linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1], linkaddr_node_addr.u8[2],linkaddr_node_addr.u8[3], linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5], linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
   sprintf(topic_hw,"Hello addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
-  // sprintf(device_id, "MQTT-SN-client");
-  // sprintf(topic_hw,"Hello");
   mqtt_sn_connection.client_id     = device_id;
   mqtt_sn_connection.udp_port      = udp_port;
   mqtt_sn_connection.ipv6_broker   = broker_address;
   mqtt_sn_connection.keep_alive    = keep_alive;
-  //mqtt_sn_connection.will_topic    = will_topic;   // Configure as 0x00 if you don't want to use
-  //mqtt_sn_connection.will_message  = will_message; // Configure as 0x00 if you don't want to use
   mqtt_sn_connection.will_topic    = 0x00;
   mqtt_sn_connection.will_message  = 0x00;
 
-  mqtt_sn_init();   // Inicializa alocação de eventos e a principal PROCESS_THREAD do MQTT-SN
+  mqtt_sn_init();
 
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++) {

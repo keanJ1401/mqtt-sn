@@ -73,6 +73,7 @@ void max44009_init() {
   uint8_t max_data[2] = {0x02, 0x40};
   i2c_burst_send(MAX4409_ADDRESS, max_data, 2);
 }
+
 uint32_t read_light_max44009() {
 	uint8_t exponent, mantissa;
 	uint8_t max44009_data[2];
@@ -247,7 +248,6 @@ PROCESS_THREAD(MQtest, ev, data)
 	temperature2 = si7021_readTemp(TEMP_NOHOLD);
 	humdity = si7021_readHumd(RH_NOHOLD);
 	memset(data_pub, 0, sizeof(data_pub));
-	sprintf(data_pub, "{\"Press\": \"%u.%u\", \"Temp\": \"%d.%u\"}", pressure / 10, pressure % 10, temperature1 / 10, temperature1 % 10);
 	float tf = (float) temperature2 * 1.00;
 	float hf = (float) humdity * 1.00;
 	float t = (float) (tf * 175.75) / 65536.0 - 46.85;
@@ -264,9 +264,11 @@ PROCESS_THREAD(MQtest, ev, data)
 PROCESS_THREAD(initMQ, ev, data)
 {
     PROCESS_BEGIN();
+
     init_broker();
-    si7021_config();
     max44009_init();
+    si7021_config();
+
     SENSORS_ACTIVATE(bmpx8x);
     ctimer_set(&ct, (CLOCK_SECOND) * 0.5, MQCalibration,0);
 

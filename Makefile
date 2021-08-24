@@ -1,4 +1,4 @@
-all: node1
+all: main_core
 PROJECT_SOURCEFILES += mqtt_sn.c
 APPS+=powertrace
 WITH_UIP6=1

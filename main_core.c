@@ -39,21 +39,20 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lpm.h"
-
+ #include "net/ipv6/sicslowpan.h"
+// static struct uip_icmp6_echo_reply_notification echo_reply_notification;
+// static struct etimer echo_request_timer;
+int def_rt_rssi = 0;
 static uint16_t udp_port = 1884;
-static uint16_t keep_alive = 5;
+static uint16_t keep_alive = 60;
 static uint16_t broker_address[] = {0xfd00, 0, 0, 0, 0, 0, 0, 0x1};
 static struct   etimer time_poll;
 // static uint16_t tick_process = 0;
 static char     pub_test[20];
 static char     device_id[17];
 static char     topic_hw[25];
-static char     *topics_mqtt[] = {"sensor/test",
-                                  "/topic_2",
-                                  "/topic_3",
-                                  "/topic_4",
-                                  "/topic_5",
-                                  "/topic_6"};
+static char     *topics_mqtt[] = {"sensor/node3/RSSI",
+						};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -73,7 +72,6 @@ void init_broker(void){
           linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5],
           linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
   sprintf(topic_hw,"Hello addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
-
   mqtt_sn_connection.client_id     = device_id;
   mqtt_sn_connection.udp_port      = udp_port;
   mqtt_sn_connection.ipv6_broker   = broker_address;
@@ -82,7 +80,6 @@ void init_broker(void){
   //mqtt_sn_connection.will_message  = will_message; // Configure as 0x00 if you don't want to use
   mqtt_sn_connection.will_topic    = 0x00;
   mqtt_sn_connection.will_message  = 0x00;
-
   mqtt_sn_init();   // Inicializa alocação de eventos e a principal PROCESS_THREAD do MQTT-SN
 
   size_t i;
@@ -94,7 +91,7 @@ void init_broker(void){
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
-  mqtt_sn_sub(topic_hw,0);
+  // mqtt_sn_sub(topic_hw,0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -105,17 +102,16 @@ AUTOSTART_PROCESSES(&init_system_process);
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
 
-  debug_os("Initializing the MQTT_SN_DEMO");
+  /// debug_os("Initializing the MQTT_SN_DEMO");
 
   init_broker();
-  lpm_set_max_pm(1);
-  etimer_set(&time_poll, CLOCK_SECOND);
+  // lpm_set_max_pm(1);
+  etimer_set(&time_poll, 30*CLOCK_SECOND);
 
   while(1) {
-	lpm_exit();
       PROCESS_WAIT_EVENT();
-      sprintf(pub_test,"%s",topic_hw);
-      mqtt_sn_pub("sensor/test",pub_test,true,0);
+      sprintf(pub_test,"%d dBm",sicslowpan_get_last_rssi());
+      mqtt_sn_pub("sensor/node3/RSSI",pub_test, false, 0);
       // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
       if (etimer_expired(&time_poll))
         etimer_reset(&time_poll);

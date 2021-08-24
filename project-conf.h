@@ -67,3 +67,8 @@
 
 // #define ENERGEST_CONF_ON 1
 // #define NETSTACK_CONF_WITH_IPV6 1
+/*
+#define MOTION_SENSOR_PORT       GPIO_A_NUM
+#define MOTION_SENSOR_PIN        6
+#define MOTION_SENSOR_VECTOR     GPIO_A_IRQn
+*/
